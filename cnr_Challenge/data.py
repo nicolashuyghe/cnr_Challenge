@@ -15,7 +15,7 @@ def load_data():
     # Make global dataframe with it
     df = pd.concat([x_train, x_test])
     df.loc[:, 'Time'] = pd.to_datetime(df['Time'], format='%d/%m/%Y %H:%M')
-    df.loc[:, 'WF'] = df.WF.apply(lambda x: int(x.strip('WF')))
+    df.loc[:, 'WF'] = df["WF"].apply(lambda x: int(x.strip('WF')))
     df.loc[y_train.index, 'Production'] = y_train
 
     return df
@@ -74,12 +74,17 @@ def calculate_best_forecasts(df, forecast_memory):
     return df
 
 
+def get_nwp_cols(df):
+    """ Returns the list of NWP columns in the dataframe """
+    return [col for col in df.columns if col.startswith('NWP')]
+
+
 def interpolate_nans(df):
     """ Interpolate missing values within each Wind farms """
 
     nwp_cols = get_nwp_cols(df)
     gb = df.groupby('WF')[nwp_cols]
-    df.loc[:, nwp_cols] = gb.apply(lambda group: group.interpolate(method='linear', limit_direction='both'))
+    df.loc[:, nwp_cols] = gb.apply(lambda value: value.interpolate(method='linear', limit_direction='both'))
     return df
 
 

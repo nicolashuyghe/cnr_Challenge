@@ -8,7 +8,6 @@ mlflow.tensorflow.autolog(every_n_iter=1,log_models=False)
 
 def get_nwp_cols(df):
     """ Returns the list of NWP columns in the dataframe """
-
     return [col for col in df.columns if col.startswith('NWP')]
 
 
